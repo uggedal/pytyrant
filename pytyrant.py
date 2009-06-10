@@ -174,23 +174,15 @@ def _tDouble(code, key, integ, fract):
     ]
 
 
-def utf8_encode(str):
-    return isinstance(str, unicode) and str.encode('utf8') or str
-
-
-def utf8_decode(str):
-    return str.decode('utf8')
-
-
 def socksend(sock, lst):
-    sock.sendall(''.join(map(utf8_encode, lst)))
+    sock.sendall(''.join(lst))
 
 
 def sockrecv(sock, bytes):
     d = ''
     while len(d) < bytes:
         d += sock.recv(min(8192, bytes - len(d)))
-    return utf8_decode(d)
+    return d
 
 
 def socksuccess(sock):
