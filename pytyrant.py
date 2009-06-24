@@ -174,15 +174,32 @@ def _tDouble(code, key, integ, fract):
     ]
 
 
+def force_unicode(s, encoding='utf-8', errors='strict'):
+    if not isinstance(s, unicode):
+        s = unicode(s, encoding, errors)
+    return s
+
+
+def force_bytestring(s, encoding='utf-8', errors='strict'):
+    if not isinstance(s, basestring):
+        try:
+            return str(s)
+        except UnicodeEncodeError:
+            return unicode(s).encode(encoding, errors)
+    elif isinstance(s, unicode):
+        return s.encode(encoding, errors)
+    else:
+        return s
+
 def socksend(sock, lst):
-    sock.sendall(''.join(lst))
+    sock.sendall(''.join(map(force_bytestring, lst)))
 
 
 def sockrecv(sock, bytes):
     d = ''
     while len(d) < bytes:
         d += sock.recv(min(8192, bytes - len(d)))
-    return d
+    return force_unicode(d)
 
 
 def socksuccess(sock):
